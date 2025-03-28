@@ -60,7 +60,6 @@ router.post('/', async (req, res) => {
         res.status(500).json({ error: 'Erro ao criar feedback' });
     }
 });
-
 /**
  * @swagger
  * /api/feedback/{id}:
@@ -89,8 +88,8 @@ router.post('/', async (req, res) => {
  *     responses:
  *       200:
  *         description: Feedback atualizado com sucesso
- *       400: 
- * description: Requisição inválida ou campo faltando
+ *       400:
+ *         description: Requisição inválida, campos faltando
  *       404:
  *         description: Feedback não encontrado
  */
@@ -98,8 +97,12 @@ router.put('/:id', async (req, res) => {
     try {
         const feedbackId = req.params.id;
         const { title, description, rating } = req.body;
-        if (!title || !description || !rating == 'number') {
-            return res.status(400).json({ error: 'Todos os campos (title, description, rating( são obrigatórios e rating deve ser um número)' });
+
+        
+        if (!title || !description || typeof rating !== 'number') {
+            return res.status(400).json({
+                error: 'Todos os campos (title, description, rating) são obrigatórios e rating deve ser um número'
+            });
         }
 
         const updatedFeedback = await Feedback.findByIdAndUpdate(
