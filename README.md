@@ -1,84 +1,92 @@
 # Feedback API
 
-Esta API simples permite o envio, listagem, atualização e remoção de feedbacks. O projeto foi desenvolvido usando **Node.js**, **Express** e **MongoDB** com **Mongoose**.
+## 📌 Sobre o Projeto
+Esta API permite a criação, leitura, atualização e exclusão (CRUD) de feedbacks.
 
-## Instalação
+A API está documentada com **Swagger** e foi implantada no **Render**, tornando-a acessível online.
 
-Clone o projeto:
+## 🚀 Tecnologias Utilizadas
+- **Node.js** com Express
+- **MongoDB** com Mongoose
+- **Swagger** para documentação
+- **Render** para deploy
+- **Postman** para testes
 
+## 🔗 Link da API no Render
+A API está disponível publicamente em:
+👉 [Feedback API - Render] https://feedback-api-36ex.onrender.com/
+
+## 📄 Documentação no Swagger
+Acesse a documentação interativa para testar os endpoints:
+👉 [Swagger UI] https://feedback-api-36ex.onrender.com//api-docs
+
+## 🔧 Como Rodar o Projeto Localmente
+
+### 1️⃣ Clone o Repositório
 ```bash
-git clone <URL-do-seu-repositório>
+git clone https://github.com/seu-usuario/feedback-api.git
 cd feedback-api
+```
+
+### 2️⃣ Instale as Dependências
+```bash
 npm install
 ```
 
-## Configuração
-
-Crie um arquivo `.env`:
-
+### 3️⃣ Configure o Banco de Dados
+Crie um arquivo **`.env`** na raiz do projeto e adicione:
 ```env
-MONGODB_URI=<sua-url-mongodb>
 PORT=3000
+MONGODB_URI=sua-string-de-conexao-do-mongo
 ```
 
-## Executar
-
-Para rodar localmente:
-
+### 4️⃣ Inicie o Servidor
 ```bash
 npm run dev
 ```
+A API estará rodando em `http://localhost:3000`
 
-## Endpoints
+## 🌐 Endpoints da API
 
-### Listar Feedbacks
+### 🔍 1. Obter todos os feedbacks
+**GET** `/api/feedback`
+```json
+[
+  {
+    "_id": "6612fc89a1234567890",
+    "title": "Ótimo serviço!",
+    "description": "A experiência foi incrível!",
+    "rating": 5
+  }
+]
+```
 
-`GET /api/feedback`
-
-Retorna todos os feedbacks.
-
-### Criar Feedback
-
-`POST /api/feedback`
-
-Body:
-
+### 📝 2. Criar um novo feedback
+**POST** `/api/feedback`
 ```json
 {
-  "title": "Ótimo",
-  "description": "Gostei muito!",
+  "title": "Novo Feedback",
+  "description": "Muito útil!",
   "rating": 5
 }
 ```
 
-### Atualizar Feedback
-
-`PUT /api/feedback/:id`
-
-Body:
-
+### ✏️ 3. Atualizar um feedback existente
+**PUT** `/api/feedback/{id}`
 ```json
 {
-  "title": "Atualizado",
-  "description": "Mudança de opinião",
+  "title": "Feedback Atualizado",
+  "description": "Agora está corrigido!",
   "rating": 4
 }
 ```
 
-### Remover Feedback
+### 🗑️ 4. Deletar um feedback
+**DELETE** `/api/feedback/{id}`
+```json
+{
+  "message": "Feedback removido com sucesso!"
+}
+```
 
-`DELETE /api/feedback/:id`
 
-Remove o feedback pelo ID.
-
-## Testes
-
-Teste os endpoints usando Postman ou Thunder Client.
-
-## Swagger (Opcional)
-
-Se desejar, utilize Swagger para documentação interativa.
-
-## Licença
-
-MIT License.
