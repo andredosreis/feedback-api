@@ -23,7 +23,9 @@ app.use((err, req, res, next) => {
 });
 
 //habilitar o cors de todas requisicoes
-app.use(cors())
+app.use(cors({ origin: '*'}))
+
+app.use(express.json()) //Middleware para ler json do corpo da requisição
 
 // Define as rotas do servidor
 app.use('/', require('./routes/feedbackRoutes'))
