@@ -26,7 +26,9 @@ app.use((err, req, res, next) => {
 app.use(cors())
 
 // Define as rotas do servidor
+app.use('/', require('./routes/feedbackRoutes'))
 app.use('/api/feedback', feedbackRoutes)
+
 
 
 // Conecta ao banco de dados MongoDB
