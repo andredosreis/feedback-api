@@ -1,7 +1,9 @@
 require('dotenv').config() // Carrega variáveis do arquivo .env
 const express = require('express') // Importa o Express para criar o servidor
+const userRoutes = require('./routes/userRoutes');
 const connectDB = require('./db/db') // Importa o Mongoose para conectar ao MongoDB
 const cors = require('cors')// Importa o CORS para permitir requisições de outras origens
+
 
 const  { swaggerUi, specs } = require('./swagger')
 
@@ -30,6 +32,7 @@ app.use(express.json()) //Middleware para ler json do corpo da requisição
 // Define as rotas do servidor
 app.use('/', require('./routes/feedbackRoutes'))
 app.use('/api/feedback', feedbackRoutes)
+app.use('/api/users', userRoutes)
 
 
 
