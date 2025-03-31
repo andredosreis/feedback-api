@@ -61,6 +61,92 @@ router.post('/', async (req, res) => {
     }
 });
 
-
+/**
+ * @swagger
+ * /api/users/{id}:
+ *   put:
+ *     summary: Atualiza um usuário existente
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do usuário a ser atualizado
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Usuário atualizado com sucesso
+ *       400:
+ *         description: Dados inválidos
+ *       404:
+ *         description: Usuário não encontrado
+ */
+router.put('/:id', async (req, res) => {
+    const { name, email } = req.body;
+  
+    if (!name || !email) {
+      return res.status(400).json({ error: 'Nome e e-mail são obrigatórios' });
+    }
+  
+    try {
+      const updatedUser = await User.findByIdAndUpdate(
+        req.params.id,
+        { name, email },
+        { new: true, runValidators: true }
+      );
+  
+      if (!updatedUser) {
+        return res.status(404).json({ error: 'Usuário não encontrado' });
+      }
+  
+      res.json({ message: 'Usuário atualizado com sucesso!', user: updatedUser });
+    } catch (err) {
+      res.status(500).json({ error: 'Erro ao atualizar usuário' });
+    }
+  });
+  
+  /**
+   * @swagger
+   * /api/users/{id}:
+   *   delete:
+   *     summary: Remove um usuário existente
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: string
+   *         description: ID do usuário a ser removido
+   *     responses:
+   *       200:
+   *         description: Usuário removido com sucesso
+   *       404:
+   *         description: Usuário não encontrado
+   */
+  router.delete('/:id', async (req, res) => {
+    try {
+      const deletedUser = await User.findByIdAndDelete(req.params.id);
+  
+      if (!deletedUser) {
+        return res.status(404).json({ error: 'Usuário não encontrado' });
+      }
+  
+      res.json({ message: 'Usuário removido com sucesso!' });
+    } catch (err) {
+      res.status(500).json({ error: 'Erro ao remover usuário' });
+    }
+  });
+  
 
 module.exports = router;
