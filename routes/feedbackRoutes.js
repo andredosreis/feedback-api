@@ -2,9 +2,9 @@ const express = require('express');
 const Feedback = require('../models/Feedback');
 const router = express.Router();
 
-router.get('/', (req, res) => {
+/*router.get('/', (req, res) => {
     res.send('The server is up and running');
-});
+});*/
 
 
 /**
