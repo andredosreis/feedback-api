@@ -14,6 +14,9 @@ const options = {
         url: 'http://localhost:3000',
         description: 'Servidor local',
       },
+      {
+        url:'https://feedback-api-36ex.onrender.com'
+      }
     ],
   },
   apis: ['./routes/*.js'], // Caminho para ler as rotas e gerar a documentação
