@@ -2,6 +2,8 @@ const express = require('express');
 const Feedback = require('../models/Feedback');
 const router = express.Router();
 
+const authenticateToken = require('../middleware/auth');
+
 /*router.get('/', (req, res) => {
     res.send('The server is up and running');
 });*/
@@ -31,6 +33,8 @@ router.get('/', async (req, res) => {
  * /api/feedback:
  *   post:
  *     summary: Adiciona um novo feedback
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -48,7 +52,7 @@ router.get('/', async (req, res) => {
  *       201:
  *         description: Feedback criado com sucesso
  */
-router.post('/', async (req, res) => {
+router.post('/', authenticateToken,async (req, res) => {
     try {
         const { title, description, rating } = req.body;
 
@@ -70,6 +74,8 @@ router.post('/', async (req, res) => {
  * /api/feedback/{id}:
  *   put:
  *     summary: Atualiza um feedback existente
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -98,7 +104,7 @@ router.post('/', async (req, res) => {
  *       404:
  *         description: Feedback não encontrado
  */
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateToken,async (req, res) => {
     try {
         const feedbackId = req.params.id;
         const { title, description, rating } = req.body;
@@ -131,6 +137,8 @@ router.put('/:id', async (req, res) => {
  * /api/feedback/{id}:
  *   delete:
  *     summary: Remove um feedback existente
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -144,7 +152,7 @@ router.put('/:id', async (req, res) => {
  *       404:
  *         description: Feedback não encontrado
  */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',authenticateToken, async (req, res) => {
     try {
         const deletedFeedback = await Feedback.findByIdAndDelete(req.params.id);
 

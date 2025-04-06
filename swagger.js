@@ -7,21 +7,35 @@ const options = {
     info: {
       title: 'Feedback API',
       version: '1.0.0',
-      description: 'Documentação da API para gerenciamento de feedbacks',
+      description: 'API documentation with JWT authentication',
     },
     servers: [
       {
         url: 'http://localhost:3000',
-        description: 'Servidor local',
+        description: 'Local development server',
       },
       {
-        url:'https://feedback-api-36ex.onrender.com'
-      }
+        url: 'https://feedback-api-36ex.onrender.com',
+        description: 'Production server on Render',
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
     ],
   },
-  apis: ['./routes/*.js'], // Caminho para ler as rotas e gerar a documentação
+  apis: ['./routes/*.js'],
 };
 
 const specs = swaggerJsdoc(options);
-
 module.exports = { swaggerUi, specs };

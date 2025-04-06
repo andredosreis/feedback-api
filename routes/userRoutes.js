@@ -1,6 +1,8 @@
 const express = require('express');
 const User = require('../models/User');
 const router = express.Router();
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 /**
  * @swagger
@@ -26,6 +28,7 @@ router.get('/', async (req, res) => {
  * /api/users:
  *   post:
  *     summary: Cria um novo usuário
+ *      
  *     requestBody:
  *       required: true
  *       content:
@@ -48,18 +51,24 @@ router.get('/', async (req, res) => {
 
 
 router.post('/', async (req, res) => {
-    if (!req.body.name || !req.body.email || !req.body.password) {
-        return res.status(400).json({ error: 'File missing or invalid' });
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+        return res.status(400).json({ error: 'Nome, email e senha são obrigatórios.' });
     }
-    try {
-        const { name, email, password } = req.body;
-        await User.create({ name, email, password });
-        res.status(201).json({ message: 'User created successfully!' });
+    
+    try{
+      const hashedPassword = await bcrypt.hash(password, 10); // 10 é o número de rounds de hash
+      const user = new User({ name, email, password: hashedPassword });
+
+      const newUser = new User({ name, email, password: hashedPassword });
+
+      await user.save();
+      res.status(201).json({ message: 'Usuário criado com sucesso!' });
     } catch (err) {
-        console.error('Err to create user:', err);
-        res.status(500).json({ error: 'Err to create user' });
+      res.status(500).json({ error: 'Erro ao criar usuário' });
     }
-});
+  });
+    
 
 /**
  * @swagger
@@ -148,5 +157,67 @@ router.put('/:id', async (req, res) => {
     }
   });
   
+  
+  
+  /**
+   * @swagger
+   * /api/users/login:
+   *   post:
+   *     summary: Login de usuário e geração de token JWT
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               email:
+   *                 type: string
+   *               password:
+   *                 type: string
+   *     responses:
+   *       200:
+   *         description: Login bem-sucedido e token gerado
+   *       400:
+   *         description: Dados inválidos
+   *       401:
+   *         description: Credenciais inválidas
+   */
+  router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+  
+    // Validação simples
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
+    }
+  
+    try {
+      // Verifica se o usuário existe
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(401).json({ error: 'Credenciais inválidas.' });
+      }
+  
+      // Compara a senha com a hash no banco
+      const senhaCorreta = await bcrypt.compare(password, user.password);
+      if (!senhaCorreta) {
+        return res.status(401).json({ error: 'Credenciais inválidas.' });
+      }
+  
+      // Gera o token JWT
+      const token = jwt.sign(
+        { userId: user._id, email: user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+      );
+  
+      res.json({ message: 'Login bem-sucedido!', token });
+    } catch (err) {
+      console.error('Erro no login:', err);
+      res.status(500).json({ error: 'Erro interno no servidor.' });
+    }
+  });
+  
 
+ 
 module.exports = router;
